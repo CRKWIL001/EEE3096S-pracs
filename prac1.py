@@ -18,24 +18,25 @@ def main():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BOARD)
 
-    output_channels = [11, 13, 15] #LEDS
-    input_channels = [16, 18] #switches
+    output_channels = [11, 13, 15] #channels connected to LEDS
+    input_channels = [16, 18] #channels connected to switches
     GPIO.setup(output_channels, GPIO.OUT, initial = GPIO.LOW)#setting up all output GPIOs
     GPIO.setup(input_channels, GPIO.IN, pull_up_down = GPIO.PUD_UP)#setting up all input GPIOs
 
     GPIO.add_event_detect(16, GPIO.FALLING, callback = increment, bouncetime = 200)
     GPIO.add_event_detect(18, GPIO.FALLING, callback = decrement, bouncetime = 200)
+
 def increment(channel):
     global count
     if (count<=6):
-        count = count+1
+        count +=1
     else:
         count = 0
     led()
 
 def decrement(channel):
     global count
-    if ((count)>=1):
+    if (count>=1):
         (count)-=1
     else:
         (count)=7
@@ -58,15 +59,13 @@ if __name__ == "__main__":
     try:
         count = 0
         main()
-        while True:
-            time.sleep(.3)
-		#loop
-             #setup gpio ports
+        while True: #infinite loop
+            time.sleep(200) #saves processing power
     except KeyboardInterrupt:
         print("Exiting gracefully")
         # Turn off your GPIOs here
         GPIO.cleanup()
-    #except e:
-     #   GPIO.cleanup()
-      #  print("Some other error occurred")
-       # print(e.message)
+    except e:
+        GPIO.cleanup()
+        print("Some other error occurred")
+        print(e.message)
